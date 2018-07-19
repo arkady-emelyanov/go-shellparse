@@ -5,80 +5,66 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/arkady-emelyanov/go-shellparse)](https://goreportcard.com/report/github.com/arkady-emelyanov/go-shellparse)
 [![codecov](https://codecov.io/gh/arkady-emelyanov/go-shellparse/branch/master/graph/badge.svg)](https://codecov.io/gh/arkady-emelyanov/go-shellparse)
 
+
+Whenever you need parse command and arguments from config file,
+you facing quotes/escaping problem.
+
+Library solves complexity of parsing such strings.
+
 ## Features
 
 * No dependencies
-* Ability to parse complex strings
-* Expand variables `${VAR}` with custom provided k/v map
-* Useful helpers to parse strings into
-    * slices
-    * maps
+* Ability to parse complex and multiline strings
+* Useful helpers to parse string into
     * command and arguments
+    * map
+    * slice
+* Ability to expand variables like`${VAR}` with provided k/v map
+* DotEnv-like file parser
+* Remove unnecessary quotes
 
-## Sample
+## Installation
 
-Program
+`go get -u github.com/arkady-emelyanov/go-shellparse`
+
+## Quick Start
+
+Simple:
 ```
-package main
+bin, args, err := shellparse.Command(`bash -c 'echo "It\'s awesome"'`)
+// bin: bash
+// args: []string{"-c", "echo \"It's awesome\""}
+```
 
-import (
-	"fmt"
-
-	"github.com/arkady-emelyanov/go-shellparse"
-)
-
-func main() {
-	fmt.Println(">>> ParseCommand ")
-	parseCommandSimple()
-
-	fmt.Println("")
-	fmt.Println("")
-	fmt.Println(">>> ParseCommandWithEnv")
-	parseCommandWithEnv()
+With custom environment:
+```
+env := map[string]string{}{
+    "USER": "johndoe",
 }
-
-func parseCommandSimple() {
-	cmd := `bash -c 'echo "it\'s complex command" && sleep 3 && exit 1'`
-	bin, args, err := shellparse.ParseCommand(cmd)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("src:", cmd)
-	fmt.Println("bin:", bin)
-	fmt.Printf("args: %#v\n", args)
-}
-
-func parseCommandWithEnv() {
-	cmd := `bash -c 'echo "it\'s complex command for user=${USER}" && sleep 3 && exit 1'`
-	env := map[string]string{
-		"USER": "joe",
-	}
-
-	bin, args, err := shellparse.ParseCommandWithEnv(cmd, env)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("src:", cmd)
-	fmt.Println("bin:", bin)
-	fmt.Printf("args: %#v\n", args)
-}
+bin, args, err := shellparse.CommandWithEnv(`echo ${USER}`, env)
+// bin: echo
+// args: []string{"johndoe"}
 ```
 
-Will output:
+If string contains ${VAR} which is not present in provided map,
+error will be raised.
+
+> Please note, `*WithEnv` functions will never lookup current environment directly. 
+Instead for they expect a map with safe key=value replacements.
+
+## Other helpers
+
 ```
->>> ParseCommand
-src: bash -c 'echo "it\'s complex command" && sleep 3 && exit 1'
-bin: bash
-args: []string{"-c", "echo \"it's complex command\" && sleep 3 && exit 1"}
+parts, err := shellparse.StringToSlice(`one 'two' "three"`)
+// []string{"one", "two", "three"}
 
->>> ParseCommandWithEnv
-src: bash -c 'echo "it\'s complex command for user=${USER}" && sleep 3 && exit 1'
-bin: bash
-args: []string{"-c", "echo \"it's complex command for user=joe\" && sleep 3 && exit 1"}
+parts, err := shellparse.StringToMap(`foo=bar`)
+// []map[string]string{"foo": "bar"}
 ```
 
-> Please note, library will never lookup current environment directly. Instead for 
-`*WithEnv` functions it expects map with safe key=value replacements.
+> Library supports comments defined as `#` char. The rest of the line
+will be ignored. 
 
+## License
+
+Licensed under the [MIT License](http://www.opensource.org/licenses/MIT).

@@ -4,15 +4,15 @@ import (
 	"fmt"
 )
 
-// ParseCommand parses string into binary and arguments
+// Command parses string into binary and arguments
 // and removes unnecessary escape runes.
-func ParseCommand(src string) (string, []string, error) {
-	return ParseCommandWithEnv(src, nil)
+func Command(src string) (string, []string, error) {
+	return CommandWithEnv(src, nil)
 }
 
-// ParseCommandWithEnv same as ParseCommand, but additionally
+// CommandWithEnv same as Command, but additionally
 // performs replacement of ${VAR} with provided k/v map.
-func ParseCommandWithEnv(src string, env map[string]string) (string, []string, error) {
+func CommandWithEnv(src string, env map[string]string) (string, []string, error) {
 	parts, err := StringToSliceWithEnv(src, env)
 	if err != nil {
 		return "", nil, err

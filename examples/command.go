@@ -7,18 +7,18 @@ import (
 )
 
 func main() {
-	fmt.Println(">>> ParseCommand ")
+	fmt.Println(">>> Command ")
 	parseCommandSimple()
 
 	fmt.Println("")
 	fmt.Println("")
-	fmt.Println(">>> ParseCommandWithEnv")
+	fmt.Println(">>> CommandWithEnv")
 	parseCommandWithEnv()
 }
 
 func parseCommandSimple() {
 	cmd := `bash -c 'echo "it\'s complex command" && sleep 3 && exit 1'`
-	bin, args, err := shellparse.ParseCommand(cmd)
+	bin, args, err := shellparse.Command(cmd)
 	if err != nil {
 		panic(err)
 	}
@@ -34,7 +34,7 @@ func parseCommandWithEnv() {
 		"USER": "joe",
 	}
 
-	bin, args, err := shellparse.ParseCommandWithEnv(cmd, env)
+	bin, args, err := shellparse.CommandWithEnv(cmd, env)
 	if err != nil {
 		panic(err)
 	}

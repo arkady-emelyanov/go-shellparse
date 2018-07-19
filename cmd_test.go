@@ -15,7 +15,7 @@ func TestParseCommand(t *testing.T) {
 	}
 
 	for i, cmd := range cmds {
-		bin, res, err := ParseCommand(cmd)
+		bin, res, err := Command(cmd)
 		exp := expt[i]
 
 		require.NoError(t, err)
@@ -36,7 +36,7 @@ func TestParseCommandWithEnv(t *testing.T) {
 
 	env := map[string]string{"HOME": "/home/john"}
 	for i, cmd := range cmds {
-		bin, res, err := ParseCommandWithEnv(cmd, env)
+		bin, res, err := CommandWithEnv(cmd, env)
 		exp := expt[i]
 
 		require.NoError(t, err)
@@ -78,7 +78,7 @@ echo "ok"
 	}
 
 	for i, cmd := range cmds {
-		bin, res, err := ParseCommand(cmd)
+		bin, res, err := Command(cmd)
 		exp := expt[i]
 
 		require.NoError(t, err)
@@ -89,6 +89,6 @@ echo "ok"
 
 func BenchmarkParseCommand(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		ParseCommand(`bash -c 'echo "look\'s like i\'m failing" && sleep 3 && exit 1'`)
+		Command(`bash -c 'echo "look\'s like i\'m failing" && sleep 3 && exit 1'`)
 	}
 }
