@@ -24,7 +24,6 @@ func TestParseCommand(t *testing.T) {
 	}
 }
 
-
 func TestParseCommandEmpty(t *testing.T) {
 	bin, args, err := Command("")
 
@@ -32,7 +31,6 @@ func TestParseCommandEmpty(t *testing.T) {
 	require.Equal(t, "", bin)
 	require.Nil(t, args)
 }
-
 
 func TestParseCommandWithEnv(t *testing.T) {
 	cmds := []string{
