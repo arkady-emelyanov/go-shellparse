@@ -5,17 +5,14 @@ import (
 	"strings"
 )
 
+// StringToMap parses key value pairs into map. Handles multiline
+// strings and comments.
 func StringToMap(src string) (map[string]string, error) {
 	return StringToMapWithEnv(src, nil)
 }
 
-//
-// map parser
-//
-// 1) parse string into map[string]string
-// 2) remove unnecessary escape runes
-// 3) replace ${VAR} placeholders
-//
+// StringToMapWithEnv the same as StringToMap, but additionally
+// performs replacement of ${VAR} with provided k/v map.
 func StringToMapWithEnv(src string, env map[string]string) (map[string]string, error) {
 	words, err := StringToSliceWithEnv(src, env)
 	if err != nil {

@@ -12,7 +12,7 @@ func ParseEnvFile(file string) (map[string]string, error) {
 }
 
 // ParseEnvFileWithEnv same as ParseEnvFile, but additionally
-// perform replacement of ${VAR} with provided k/v map.
+// performs replacement of ${VAR} with provided k/v map.
 // If file path is prepended with '-' char, file read error will not be raised
 func ParseEnvFileWithEnv(file string, extraEnv map[string]string) (map[string]string, error) {
 	var err error
@@ -45,7 +45,7 @@ func ParseEnvFileWithEnv(file string, extraEnv map[string]string) (map[string]st
 Error:
 	if muteError == false {
 		return nil, err
-	} else {
-		return res, nil
 	}
+
+	return res, nil
 }

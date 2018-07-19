@@ -2,32 +2,28 @@ package shellparse
 
 import "fmt"
 
-// StringToSlice parses string into <command, args[]> form
-// error code indicates that src string is invalid
+// StringToSlice parses string into slice.
 func StringToSlice(src string) ([]string, error) {
 	return StringToSliceWithEnv(src, nil)
 }
 
-// StringToSliceWithEnv parses string delimited by space into slice
-//
-// 1) parse string into []string
-// 2) remove unnecessary escape runes
-// 3) replace ${VAR} placeholders
-//
+// StringToSliceWithEnv same as StringToSlice, but additionally
+// performs replacement of ${VAR} with provided k/v map.
 func StringToSliceWithEnv(input string, env map[string]string) ([]string, error) {
 	words, err := splitWordsFsm(input)
 	if err != nil {
 		return nil, fmt.Errorf("`%s` in value `%s`", err.Error(), input)
 	}
 
-	// words postprocessing
 	for i := range words {
-		replaced, err := replaceVarsFsm(words[i], env) // `%{ENV}` to `env_value`
+		// `%{ENV}` to `value`
+		replaced, err := replaceVarsFsm(words[i], env)
 		if err != nil {
 			return nil, fmt.Errorf("`%s` in value `%s`", err.Error(), words[i])
 		}
 
-		unescaped, err := unescapeWordsFsm(replaced) // 'hello "world\'s"' -> hello "world's"
+		// 'hello "world\'s"' -> hello "world's"
+		unescaped, err := unescapeWordsFsm(replaced)
 		if err != nil {
 			return nil, fmt.Errorf("`%s` in value `%s`", err.Error(), replaced)
 		}

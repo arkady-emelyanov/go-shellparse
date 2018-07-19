@@ -11,7 +11,7 @@ func ParseCommand(src string) (string, []string, error) {
 }
 
 // ParseCommandWithEnv same as ParseCommand, but additionally
-// perform replacement of ${VAR} with provided k/v map.
+// performs replacement of ${VAR} with provided k/v map.
 func ParseCommandWithEnv(src string, env map[string]string) (string, []string, error) {
 	parts, err := StringToSliceWithEnv(src, env)
 	if err != nil {
