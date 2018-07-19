@@ -58,8 +58,8 @@ Instead for they expect a map with safe key=value replacements.
 parts, err := shellparse.StringToSlice(`one 'two' "three"`)
 // []string{"one", "two", "three"}
 
-parts, err := shellparse.StringToMap(`foo=bar`)
-// []map[string]string{"foo": "bar"}
+parts, err := shellparse.StringToMap(`foo=bar foobar=baz`)
+// []map[string]string{"foo": "bar", "foobar": "baz"}
 ```
 
 > Library supports comments defined as `#` char. The rest of the line

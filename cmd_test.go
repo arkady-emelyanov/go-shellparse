@@ -15,14 +15,24 @@ func TestParseCommand(t *testing.T) {
 	}
 
 	for i, cmd := range cmds {
-		bin, res, err := Command(cmd)
+		bin, args, err := Command(cmd)
 		exp := expt[i]
 
 		require.NoError(t, err)
 		require.Equal(t, exp[0], bin)
-		require.Equal(t, exp[1:], res)
+		require.Equal(t, exp[1:], args)
 	}
 }
+
+
+func TestParseCommandEmpty(t *testing.T) {
+	bin, args, err := Command("")
+
+	require.Error(t, err)
+	require.Equal(t, "", bin)
+	require.Nil(t, args)
+}
+
 
 func TestParseCommandWithEnv(t *testing.T) {
 	cmds := []string{
@@ -36,12 +46,12 @@ func TestParseCommandWithEnv(t *testing.T) {
 
 	env := map[string]string{"HOME": "/home/john"}
 	for i, cmd := range cmds {
-		bin, res, err := CommandWithEnv(cmd, env)
+		bin, args, err := CommandWithEnv(cmd, env)
 		exp := expt[i]
 
 		require.NoError(t, err)
 		require.Equal(t, exp[0], bin)
-		require.Equal(t, exp[1:], res)
+		require.Equal(t, exp[1:], args)
 	}
 }
 

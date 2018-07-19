@@ -15,6 +15,22 @@ func TestStringToMap(t *testing.T) {
 	require.Equal(t, exp, res)
 }
 
+func TestStringToMapNoKey(t *testing.T) {
+	src := `=hello`
+
+	res, err := StringToMap(src)
+	require.Error(t, err)
+	require.Nil(t, res)
+}
+
+func TestStringToMapNoVal(t *testing.T) {
+	src := `hello`
+
+	res, err := StringToMap(src)
+	require.Error(t, err)
+	require.Nil(t, res)
+}
+
 func TestStringToMapWithEnv(t *testing.T) {
 	exp := map[string]string{"hello1": "world1", "he/llo2": "world2", "hello3": "joe", "hello4": "world4"}
 	env := map[string]string{"USER": "joe"}

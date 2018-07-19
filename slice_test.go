@@ -23,6 +23,14 @@ func TestParseSliceNoEnv(t *testing.T) {
 	require.Nil(t, res)
 }
 
+func TestParseSliceNoSecondQuote(t *testing.T) {
+	src := `bash -c 'sleep`
+
+	res, err := StringToSlice(src)
+	require.Error(t, err)
+	require.Nil(t, res)
+}
+
 func TestParseSliceWithEnv(t *testing.T) {
 	exp := []string{"hello", "hello123", "world", "hello-world", "hello-joe"}
 	env := map[string]string{"USER": "joe"}
