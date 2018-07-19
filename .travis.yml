@@ -1,0 +1,16 @@
+sudo: false
+language: go
+go:
+  - "1.9"
+  - "1.10"
+  - "tip"
+
+cache:
+  directories:
+    - vendor
+
+install:
+  - dep ensure -v
+
+script:
+  - go test -v ./...
