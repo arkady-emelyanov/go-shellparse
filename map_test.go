@@ -6,7 +6,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestParseMapString(t *testing.T) {
+func TestStringToMap(t *testing.T) {
+	exp := map[string]string{"hello1": "world1", "he/llo2": "world2"}
+	src := `'hello1=world1' "he/llo2=world2"`
+
+	res, err := StringToMap(src)
+	require.NoError(t, err)
+	require.Equal(t, exp, res)
+}
+
+func TestStringToMapWithEnv(t *testing.T) {
 	exp := map[string]string{"hello1": "world1", "he/llo2": "world2", "hello3": "joe", "hello4": "world4"}
 	env := map[string]string{"USER": "joe"}
 

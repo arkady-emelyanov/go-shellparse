@@ -6,6 +6,24 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestParseCommand(t *testing.T) {
+	cmds := []string{
+		`docker run -it --rm hello-world`,
+	}
+	expt := [][]string{
+		{`docker`, `run`, `-it`, `--rm`, `hello-world`},
+	}
+
+	for i, cmd := range cmds {
+		bin, res, err := ParseCommand(cmd)
+		exp := expt[i]
+
+		require.NoError(t, err)
+		require.Equal(t, exp[0], bin)
+		require.Equal(t, exp[1:], res)
+	}
+}
+
 func TestParseCommandWithEnv(t *testing.T) {
 	cmds := []string{
 		`touch ${HOME}/.hushlogin`,

@@ -1,10 +1,9 @@
 package shellparse
 
 import (
-	"strings"
 	"fmt"
+	"strings"
 )
-
 
 func StringToMap(src string) (map[string]string, error) {
 	return StringToMapWithEnv(src, nil)

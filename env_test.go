@@ -6,10 +6,18 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestParseEnvironmentFile(t *testing.T) {
+func TestParseEnvFile(t *testing.T) {
+	res, err := ParseEnvFile("./_testdata/dotenv.txt")
+	exp := map[string]string{"FOO": "bar"}
+
+	require.NoError(t, err)
+	require.Equal(t, exp, res)
+}
+
+func TestParseEnvFileWithExtraEnv(t *testing.T) {
 	env := map[string]string{"BAR": "baz"}
 
-	res, err := ParseEnvFileWithEnv("./_testdata/env.txt", env)
+	res, err := ParseEnvFileWithEnv("./_testdata/dotenv_env.txt", env)
 	exp := map[string]string{"FOO": "baz"}
 
 	require.NoError(t, err)

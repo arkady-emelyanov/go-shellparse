@@ -1,16 +1,19 @@
 package shellparse
 
 import (
-	"strings"
 	"io/ioutil"
+	"strings"
 )
 
+// ParseEnvFile is helper for parsing dotenv compatible files.
+// If file path is prepended with '-' char, file read error will not be raised
 func ParseEnvFile(file string) (map[string]string, error) {
 	return ParseEnvFileWithEnv(file, nil)
 }
 
-// ParseEnvFileWithEnv parse file provided as path into map[string]string
-// if file path is prepended with '-' char read file errors will be muted
+// ParseEnvFileWithEnv same as ParseEnvFile, but additionally
+// perform replacement of ${VAR} with provided k/v map.
+// If file path is prepended with '-' char, file read error will not be raised
 func ParseEnvFileWithEnv(file string, extraEnv map[string]string) (map[string]string, error) {
 	var err error
 
@@ -46,4 +49,3 @@ Error:
 		return res, nil
 	}
 }
-
