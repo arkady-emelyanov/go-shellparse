@@ -50,7 +50,7 @@ If string contains ${VAR} which is not present in provided map,
 error will be raised.
 
 > Please note, `*WithEnv` functions will never lookup current environment directly. 
-Instead for they expect a map with safe key=value replacements.
+All key=value replacements expected to be present in a provided map.
 
 ## Other helpers
 
