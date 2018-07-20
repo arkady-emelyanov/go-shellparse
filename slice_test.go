@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestParseSlice(t *testing.T) {
+func TestStringToSlice(t *testing.T) {
 	exp := []string{"bash", "-c", "sleep 1"}
 	src := `bash -c 'sleep 1'`
 
@@ -15,7 +15,7 @@ func TestParseSlice(t *testing.T) {
 	require.Equal(t, exp, res)
 }
 
-func TestParseSliceNoEnv(t *testing.T) {
+func TestStringToSliceNoVars(t *testing.T) {
 	src := `bash -c 'sleep ${SLEEP}'`
 
 	res, err := StringToSlice(src)
@@ -23,7 +23,7 @@ func TestParseSliceNoEnv(t *testing.T) {
 	require.Nil(t, res)
 }
 
-func TestParseSliceNoSecondQuote(t *testing.T) {
+func TestStringToSliceNoSecondQuote(t *testing.T) {
 	src := `bash -c 'sleep`
 
 	res, err := StringToSlice(src)
@@ -31,20 +31,28 @@ func TestParseSliceNoSecondQuote(t *testing.T) {
 	require.Nil(t, res)
 }
 
-func TestParseSliceWithEnv(t *testing.T) {
+func TestStringToSliceNoRightDelim(t *testing.T) {
+	src := `${HELLO`
+
+	res, err := StringToSlice(src)
+	require.Error(t, err)
+	require.Nil(t, res)
+}
+
+func TestStringToSliceWithVars(t *testing.T) {
 	exp := []string{"hello", "hello123", "world", "hello-world", "hello-joe"}
-	env := map[string]string{"USER": "joe"}
+	vars := map[string]string{"USER": "joe"}
 
 	src := `'hello' hello123 "world" \
 	"hello-world" hello-${USER}`
 
-	res, err := StringToSliceWithEnv(src, env)
+	res, err := StringToSliceWithVars(src, vars)
 	require.NoError(t, err)
 	require.Equal(t, exp, res)
 }
 
-func BenchmarkParseSliceString(b *testing.B) {
+func BenchmarkStringToSlice(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		StringToSliceWithEnv(`'hello' hello123 "world"`, nil)
+		StringToSliceWithVars(`'hello' hello123 "world"`, nil)
 	}
 }

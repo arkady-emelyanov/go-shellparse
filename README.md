@@ -7,21 +7,21 @@
 
 
 Whenever you need parse command and arguments from config file,
-you facing quotes/escaping problem.
-
-Library solves complexity of parsing such strings.
+you facing quotes/escaping problem. Library hides complexity 
+of parsing such strings.
 
 ## Features
 
 * No dependencies
 * Ability to parse complex and multiline strings
-* Useful helpers to parse string into
+* Comments for multiline strings via `#` char
+* Useful helpers to parse string into:
     * command and arguments
     * map
     * slice
 * Ability to expand variables like`${VAR}` with provided k/v map
 * DotEnv-like file parser
-* Remove unnecessary quotes
+* Remove unnecessary quotes from commands and agruments
 
 ## Installation
 
@@ -29,19 +29,19 @@ Library solves complexity of parsing such strings.
 
 ## Quick Start
 
-Simple:
+Simple usage:
 ```
 bin, args, err := shellparse.Command(`bash -c 'echo "It\'s awesome"'`)
 // bin: bash
 // args: []string{"-c", "echo \"It's awesome\""}
 ```
 
-With custom environment:
+With custom variables:
 ```
-env := map[string]string{}{
+vars := map[string]string{}{
     "USER": "johndoe",
 }
-bin, args, err := shellparse.CommandWithEnv(`echo ${USER}`, env)
+bin, args, err := shellparse.CommandWithVars(`echo ${USER}`, vars)
 // bin: echo
 // args: []string{"johndoe"}
 ```
@@ -49,8 +49,8 @@ bin, args, err := shellparse.CommandWithEnv(`echo ${USER}`, env)
 If string contains ${VAR} which is not present in provided map,
 error will be raised.
 
-> Please note, `*WithEnv` functions will never lookup current environment directly. 
-All key=value replacements expected to be present in a provided map.
+> Please note, `*WithVars` functions will never lookup current environment directly. 
+All `key`=`value` var replacements expected to be present in a provided map.
 
 ## Other helpers
 

@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestParseCommand(t *testing.T) {
+func TestCommand(t *testing.T) {
 	cmds := []string{
 		`docker run -it --rm hello-world`,
 	}
@@ -24,7 +24,7 @@ func TestParseCommand(t *testing.T) {
 	}
 }
 
-func TestParseCommandEmpty(t *testing.T) {
+func TestCommandEmpty(t *testing.T) {
 	bin, args, err := Command("")
 
 	require.Error(t, err)
@@ -32,7 +32,7 @@ func TestParseCommandEmpty(t *testing.T) {
 	require.Nil(t, args)
 }
 
-func TestParseCommandWithEnv(t *testing.T) {
+func TestCommandWithVars(t *testing.T) {
 	cmds := []string{
 		`touch ${HOME}/.hushlogin`,
 		`touch \${HOME}/.hushlogin`,
@@ -42,9 +42,9 @@ func TestParseCommandWithEnv(t *testing.T) {
 		{`touch`, `${HOME}/.hushlogin`},
 	}
 
-	env := map[string]string{"HOME": "/home/john"}
+	vars := map[string]string{"HOME": "/home/john"}
 	for i, cmd := range cmds {
-		bin, args, err := CommandWithEnv(cmd, env)
+		bin, args, err := CommandWithVars(cmd, vars)
 		exp := expt[i]
 
 		require.NoError(t, err)
@@ -53,7 +53,7 @@ func TestParseCommandWithEnv(t *testing.T) {
 	}
 }
 
-func TestParseQuotes(t *testing.T) {
+func TestCommandWithQuotes(t *testing.T) {
 	multilineCmd := `bash -c '
 echo "ok" &&
 echo "ok" &&

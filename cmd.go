@@ -7,13 +7,13 @@ import (
 // Command parses string into binary and arguments
 // and removes unnecessary escape runes.
 func Command(src string) (string, []string, error) {
-	return CommandWithEnv(src, nil)
+	return CommandWithVars(src, nil)
 }
 
-// CommandWithEnv same as Command, but additionally
+// CommandWithVars same as Command, but additionally
 // performs replacement of ${VAR} with provided k/v map.
-func CommandWithEnv(src string, env map[string]string) (string, []string, error) {
-	parts, err := StringToSliceWithEnv(src, env)
+func CommandWithVars(src string, vars map[string]string) (string, []string, error) {
+	parts, err := StringToSliceWithVars(src, vars)
 	if err != nil {
 		return "", nil, err
 	}
