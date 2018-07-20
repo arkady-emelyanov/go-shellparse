@@ -24,6 +24,18 @@ func TestCommand(t *testing.T) {
 	}
 }
 
+func TestCommandMultiline(t *testing.T) {
+	cmd := `docker run -it \
+				--rm \
+				-v /tmp:/tmp:rw`
+	exp := []string{"docker", "run", "-it", "--rm", "-v", "/tmp:/tmp:rw"}
+
+	bin, args, err := Command(cmd)
+	require.NoError(t, err)
+	require.Equal(t, exp[0], bin)
+	require.Equal(t, exp[1:], args)
+}
+
 func TestCommandEmpty(t *testing.T) {
 	bin, args, err := Command("")
 
