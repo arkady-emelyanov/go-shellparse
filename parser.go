@@ -102,9 +102,7 @@ func splitWordsFsm(input string) ([]string, error) {
 	}
 
 	err := p.lastError
-	col := make([]string, len(p.collected))
-	copy(col, p.collected)
-	return col, err
+	return p.collected, err
 }
 
 // FSM for replacing ${VAR} with actual content provided as map
