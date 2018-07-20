@@ -9,7 +9,7 @@ import (
 
 type parser struct {
 	input     string
-	env       map[string]string
+	vars      map[string]string
 	pos       int
 	start     int
 	width     int
@@ -18,12 +18,12 @@ type parser struct {
 }
 
 const (
-	runeEOF                   = -1
-	runeEnvVariableStart      = '$'
-	runeEnvVariableLeftDelim  = '{'
-	runeEnvVariableRightDelim = '}'
-	runeEscape                = '\\'
-	runeComment               = '#'
+	runeEOF           = -1
+	runeVarStart      = '$'
+	runeVarLeftDelim  = '{'
+	runeVarRightDelim = '}'
+	runeEscape        = '\\'
+	runeComment       = '#'
 )
 
 // step back in input steam
@@ -108,8 +108,8 @@ func splitWordsFsm(input string) ([]string, error) {
 }
 
 // FSM for replacing ${VAR} with actual content provided as map
-func replaceVarsFsm(input string, env map[string]string) (string, error) {
-	p := &parser{input: input, env: env}
+func replaceVarsFsm(input string, vars map[string]string) (string, error) {
+	p := &parser{input: input, vars: vars}
 	for state := replaceVarsInitial; state != nil; {
 		state = state(p)
 	}
@@ -194,12 +194,12 @@ func replaceVarsInitial(p *parser) stateFn {
 		}
 
 		// `\${` escaped
-		if r == runeEnvVariableStart && prev != runeEscape {
-			if p.peek() == runeEnvVariableLeftDelim {
-				p.backup()  // shift % char back
-				p.collect() // collect everything before % char
-				p.next()    // step forward to % char
-				p.next()    // step forward to ( char
+		if r == runeVarStart && prev != runeEscape {
+			if p.peek() == runeVarLeftDelim {
+				p.backup()  // shift $ char back
+				p.collect() // collect everything before $ char
+				p.next()    // step forward to $ char
+				p.next()    // step forward to { char
 				p.ignore()  // ignore both
 				return replaceVar
 			}
@@ -216,17 +216,17 @@ func replaceVar(p *parser) stateFn {
 	for {
 		r := p.next()
 		if r == runeEOF {
-			return p.errorf("unexpected EOF while looking for: %#U", runeEnvVariableRightDelim)
+			return p.errorf("unexpected EOF while looking for: %#U", runeVarRightDelim)
 		}
 
-		if r == runeEnvVariableRightDelim {
+		if r == runeVarRightDelim {
 			p.backup()
 			break
 		}
 	}
 
 	k := p.extract()
-	v, ok := p.env[k]
+	v, ok := p.vars[k]
 	if !ok {
 		return p.errorf("unknown variable: %#v", k)
 	}
@@ -321,7 +321,7 @@ func collectQuotedString(p *parser) stateFn {
 			continue
 		}
 
-		// expression: `"it\"s"` -> emit as `it"s`
+		// expression: `"it\"s"`, emit as `it"s`
 		if r == quote && previousRune == runeEscape {
 			previousRune = r
 			continue

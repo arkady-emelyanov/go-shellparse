@@ -31,19 +31,19 @@ func TestStringToMapNoVal(t *testing.T) {
 	require.Nil(t, res)
 }
 
-func TestStringToMapWithEnv(t *testing.T) {
+func TestStringToMapWithVars(t *testing.T) {
 	exp := map[string]string{"hello1": "world1", "he/llo2": "world2", "hello3": "joe", "hello4": "world4"}
-	env := map[string]string{"USER": "joe"}
+	vars := map[string]string{"USER": "joe"}
 
 	src := `'hello1=world1' "he/llo2=world2" hello3=${USER} \
 	"hello4=world4"`
 
-	res, err := StringToMapWithEnv(src, env)
+	res, err := StringToMapWithVars(src, vars)
 	require.NoError(t, err)
 	require.Equal(t, exp, res)
 }
 
-func TestParseMapString_Multiline(t *testing.T) {
+func TestStringToMap_Multiline(t *testing.T) {
 	exp := map[string]string{"FOO": "bar", "BAZ": "foo", "HTTP_PROXY": ""}
 	src := `# this is a comment
 FOO=bar
@@ -52,13 +52,13 @@ FOO=bar
 BAZ=foo
 HTTP_PROXY=
 # another comment`
-	res, err := StringToMapWithEnv(src, nil)
+	res, err := StringToMapWithVars(src, nil)
 	require.NoError(t, err)
 	require.Equal(t, exp, res)
 }
 
-func BenchmarkParseMapString(b *testing.B) {
+func BenchmarkStringToMap(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		StringToMapWithEnv(`hello1=world1 hello2=world2`, nil)
+		StringToMapWithVars(`hello1=world1 hello2=world2`, nil)
 	}
 }

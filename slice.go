@@ -4,12 +4,12 @@ import "fmt"
 
 // StringToSlice parses string into slice.
 func StringToSlice(src string) ([]string, error) {
-	return StringToSliceWithEnv(src, nil)
+	return StringToSliceWithVars(src, nil)
 }
 
-// StringToSliceWithEnv same as StringToSlice, but additionally
+// StringToSliceWithVars same as StringToSlice, but additionally
 // performs replacement of ${VAR} with provided k/v map.
-func StringToSliceWithEnv(input string, env map[string]string) ([]string, error) {
+func StringToSliceWithVars(input string, vars map[string]string) ([]string, error) {
 	words, err := splitWordsFsm(input)
 	if err != nil {
 		return nil, fmt.Errorf("`%s` in value `%s`", err.Error(), input)
@@ -17,7 +17,7 @@ func StringToSliceWithEnv(input string, env map[string]string) ([]string, error)
 
 	for i := range words {
 		// `%{ENV}` to `value`
-		replaced, err := replaceVarsFsm(words[i], env)
+		replaced, err := replaceVarsFsm(words[i], vars)
 		if err != nil {
 			return nil, fmt.Errorf("`%s` in value `%s`", err.Error(), words[i])
 		}

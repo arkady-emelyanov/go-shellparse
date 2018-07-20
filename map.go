@@ -8,18 +8,17 @@ import (
 // StringToMap parses key value pairs into map. Handles multiline
 // strings and comments.
 func StringToMap(src string) (map[string]string, error) {
-	return StringToMapWithEnv(src, nil)
+	return StringToMapWithVars(src, nil)
 }
 
-// StringToMapWithEnv the same as StringToMap, but additionally
+// StringToMapWithVars the same as StringToMap, but additionally
 // performs replacement of ${VAR} with provided k/v map.
-func StringToMapWithEnv(src string, env map[string]string) (map[string]string, error) {
-	words, err := StringToSliceWithEnv(src, env)
+func StringToMapWithVars(src string, vars map[string]string) (map[string]string, error) {
+	words, err := StringToSliceWithVars(src, vars)
 	if err != nil {
 		return nil, err
 	}
 
-	// split by '=' rune
 	res := make(map[string]string)
 	for i := range words {
 		j := strings.IndexRune(words[i], '=')

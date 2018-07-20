@@ -1,2 +1,2 @@
 # this is the comment
-FOO=${BAR}
+${FOO}=bar

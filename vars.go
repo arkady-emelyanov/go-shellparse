@@ -5,16 +5,16 @@ import (
 	"strings"
 )
 
-// ParseEnvFile is helper for parsing dotenv compatible files.
+// ParseVarsFile is helper for parsing dotenv compatible files.
 // If file path is prepended with '-' char, file read error will not be raised
-func ParseEnvFile(file string) (map[string]string, error) {
-	return ParseEnvFileWithEnv(file, nil)
+func ParseVarsFile(file string) (map[string]string, error) {
+	return ParseVarsFileWithVars(file, nil)
 }
 
-// ParseEnvFileWithEnv same as ParseEnvFile, but additionally
+// ParseVarsFileWithVars same as ParseVarsFile, but additionally
 // performs replacement of ${VAR} with provided k/v map.
 // If file path is prepended with '-' char, file read error will not be raised
-func ParseEnvFileWithEnv(file string, extraEnv map[string]string) (map[string]string, error) {
+func ParseVarsFileWithVars(file string, extraEnv map[string]string) (map[string]string, error) {
 	var err error
 
 	res := make(map[string]string)
@@ -31,7 +31,9 @@ func ParseEnvFileWithEnv(file string, extraEnv map[string]string) (map[string]st
 	}
 
 	if len(b) > 0 {
-		tmp, err := StringToMapWithEnv(string(b), extraEnv)
+		var tmp map[string]string
+
+		tmp, err = StringToMapWithVars(string(b), extraEnv)
 		if err != nil {
 			goto Error
 		}
@@ -43,9 +45,9 @@ func ParseEnvFileWithEnv(file string, extraEnv map[string]string) (map[string]st
 	}
 
 Error:
-	if muteError == false {
-		return nil, err
+	if muteError {
+		return res, nil
 	}
 
-	return res, nil
+	return nil, err
 }
