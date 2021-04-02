@@ -1,6 +1,7 @@
 package shellparse
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -21,10 +22,20 @@ func TestParseVarsFileIncorrect(t *testing.T) {
 	require.Nil(t, res)
 }
 
+func TestParseVarsFileWithEnv(t *testing.T) {
+	_ = os.Setenv("FOO", "FOO")
+	res, err := ParseVarsFileWithEnv("./_testdata/dotenv_with_vars.txt")
+	_ = os.Unsetenv("FOO")
+
+	exp := map[string]string{"FOO": "bar"}
+	require.NoError(t, err)
+	require.Equal(t, exp, res)
+}
+
 func TestParseVarsFileWithExtraVars(t *testing.T) {
 	vars := map[string]string{"FOO": "FOO"}
 
-	res, err := ParseVarsFileWithVars("./_testdata/dotenv_with_vars.txt", vars)
+	res, err := ParseVarsFileWithMap("./_testdata/dotenv_with_vars.txt", vars)
 	exp := map[string]string{"FOO": "bar"}
 
 	require.NoError(t, err)
@@ -32,14 +43,14 @@ func TestParseVarsFileWithExtraVars(t *testing.T) {
 }
 
 func TestParseVarsFile_Error(t *testing.T) {
-	m, err := ParseVarsFileWithVars("./testdata/_absent_file_", nil)
+	m, err := ParseVarsFileWithMap("./testdata/_absent_file_", nil)
 
 	require.Error(t, err)
 	require.Empty(t, m)
 }
 
 func TestParseVarsFile_Muted(t *testing.T) {
-	m, err := ParseVarsFileWithVars("-./testdata/_absent_file_", nil)
+	m, err := ParseVarsFileWithMap("-./testdata/_absent_file_", nil)
 
 	require.NoError(t, err)
 	require.Empty(t, m)

@@ -8,13 +8,13 @@ import (
 // StringToMap parses key value pairs into map. Handles multiline
 // strings and comments.
 func StringToMap(src string) (map[string]string, error) {
-	return StringToMapWithVars(src, nil)
+	return StringToMapWithMap(src, nil)
 }
 
-// StringToMapWithVars the same as StringToMap, but additionally
+// StringToMapWithMap the same as StringToMap, but additionally
 // performs replacement of ${VAR} with provided k/v map.
-func StringToMapWithVars(src string, vars map[string]string) (map[string]string, error) {
-	words, err := StringToSliceWithVars(src, vars)
+func StringToMapWithMap(src string, vars map[string]string) (map[string]string, error) {
+	words, err := StringToSliceWithMap(src, vars)
 	if err != nil {
 		return nil, err
 	}
