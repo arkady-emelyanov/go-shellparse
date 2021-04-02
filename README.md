@@ -1,7 +1,6 @@
 # Parse strings à la shell
 
-[![GoDoc](https://godoc.org/github.com/arkady-emelyanov/go-shellparse?status.svg)](https://godoc.org/github.com/arkady-emelyanov/go-shellparse)
-[![Build Status](https://travis-ci.org/arkady-emelyanov/go-shellparse.svg?branch=master)](https://travis-ci.org/arkady-emelyanov/go-shellparse)
+[![GoDoc](https://pkg.go.dev/github.com/arkady-emelyanov/go-shellparse?status.svg)](https://godoc.org/github.com/arkady-emelyanov/go-shellparse)
 [![Go Report Card](https://goreportcard.com/badge/github.com/arkady-emelyanov/go-shellparse)](https://goreportcard.com/report/github.com/arkady-emelyanov/go-shellparse)
 [![codecov](https://codecov.io/gh/arkady-emelyanov/go-shellparse/branch/master/graph/badge.svg)](https://codecov.io/gh/arkady-emelyanov/go-shellparse)
 
@@ -12,7 +11,6 @@ of parsing such strings.
 
 ## Features
 
-* No dependencies
 * Ability to parse complex and multiline strings
 * Comments for multiline strings via `#` char
 * Useful helpers to parse string into:
@@ -21,7 +19,7 @@ of parsing such strings.
     * slice
 * Ability to expand variables like`${VAR}` with provided k/v map
 * DotEnv-like file parser
-* Remove unnecessary quotes from commands and agruments
+* Remove unnecessary quotes from commands and arguments
 
 ## Installation
 
