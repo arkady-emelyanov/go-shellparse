@@ -59,6 +59,6 @@ HTTP_PROXY=
 
 func BenchmarkStringToMap(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		StringToMapWithMap(`hello1=world1 hello2=world2`, nil)
+		_, _ = StringToMapWithMap(`hello1=world1 hello2=world2`, nil)
 	}
 }

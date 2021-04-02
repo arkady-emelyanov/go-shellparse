@@ -1,6 +1,7 @@
 package shellparse
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -19,6 +20,16 @@ func TestParseVarsFileIncorrect(t *testing.T) {
 
 	require.Error(t, err)
 	require.Nil(t, res)
+}
+
+func TestParseVarsFileWithEnv(t *testing.T) {
+	_ = os.Setenv("FOO", "FOO")
+	res, err := ParseVarsFileWithEnv("./_testdata/dotenv_with_vars.txt")
+	_ = os.Unsetenv("FOO")
+
+	exp := map[string]string{"FOO": "bar"}
+	require.NoError(t, err)
+	require.Equal(t, exp, res)
 }
 
 func TestParseVarsFileWithExtraVars(t *testing.T) {

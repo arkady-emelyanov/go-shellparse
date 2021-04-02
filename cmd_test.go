@@ -47,9 +47,9 @@ func TestCommandEmpty(t *testing.T) {
 
 func TestCommandWithEnv(t *testing.T) {
 
-	os.Setenv("SLEEP", "1")
+	_= os.Setenv("SLEEP", "1")
 	bin, args, err := CommandWithEnv(`bash -c 'sleep ${SLEEP}'`)
-	os.Unsetenv("SLEEP")
+	_ = os.Unsetenv("SLEEP")
 
 	exp := []string{"bash", "-c", "sleep 1"}
 	require.NoError(t, err)

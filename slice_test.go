@@ -16,7 +16,7 @@ func TestStringToSlice(t *testing.T) {
 	require.Equal(t, exp, res)
 }
 
-func TestStringToSliceNoVars(t *testing.T) {
+func TestStringToSliceNoMap(t *testing.T) {
 	src := `bash -c 'sleep ${SLEEP}'`
 	exp := []string{"bash", "-c", "sleep ${SLEEP}"}
 
@@ -25,7 +25,15 @@ func TestStringToSliceNoVars(t *testing.T) {
 	require.Equal(t, exp, res)
 }
 
-func TestStringToSliceEscaped(t *testing.T) {
+func TestStringToSliceWithMissingVar(t *testing.T) {
+	src := `bash -c 'sleep ${SLEEP}'`
+
+	res, err := StringToSliceWithMap(src, map[string]string{"a": "b"})
+	require.Error(t, err)
+	require.Nil(t, res)
+}
+
+func TestStringToSliceWithEnv(t *testing.T) {
 	src := `bash -c 'sleep ${SLEEP}'`
 	exp := []string{"bash", "-c", "sleep 1"}
 
@@ -35,6 +43,14 @@ func TestStringToSliceEscaped(t *testing.T) {
 
 	require.NoError(t, err)
 	require.Equal(t, exp, res)
+}
+
+func TestStringToSliceWithIncorrectEscape(t *testing.T) {
+	src := `bash -c\ 'sleep ${SLEEP}'`
+	res, err := StringToSlice(src)
+
+	require.Error(t, err)
+	require.Nil(t, res)
 }
 
 func TestStringToSliceNoSecondQuote(t *testing.T) {
@@ -67,6 +83,6 @@ func TestStringToSliceWithVars(t *testing.T) {
 
 func BenchmarkStringToSlice(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		StringToSliceWithMap(`'hello' hello123 "world"`, nil)
+		_, _ = StringToSliceWithMap(`'hello' hello123 "world"`, nil)
 	}
 }
