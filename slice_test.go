@@ -1,6 +1,7 @@
 package shellparse
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -17,10 +18,23 @@ func TestStringToSlice(t *testing.T) {
 
 func TestStringToSliceNoVars(t *testing.T) {
 	src := `bash -c 'sleep ${SLEEP}'`
+	exp := []string{"bash", "-c", "sleep ${SLEEP}"}
 
 	res, err := StringToSlice(src)
-	require.Error(t, err)
-	require.Nil(t, res)
+	require.NoError(t, err)
+	require.Equal(t, exp, res)
+}
+
+func TestStringToSliceEscaped(t *testing.T) {
+	src := `bash -c 'sleep ${SLEEP}'`
+	exp := []string{"bash", "-c", "sleep 1"}
+
+	_ = os.Setenv("SLEEP", "1")
+	res, err := StringToSliceWithEnv(src)
+	_ = os.Unsetenv("SLEEP")
+
+	require.NoError(t, err)
+	require.Equal(t, exp, res)
 }
 
 func TestStringToSliceNoSecondQuote(t *testing.T) {
@@ -34,7 +48,7 @@ func TestStringToSliceNoSecondQuote(t *testing.T) {
 func TestStringToSliceNoRightDelim(t *testing.T) {
 	src := `${HELLO`
 
-	res, err := StringToSlice(src)
+	res, err := StringToSliceWithMap(src, map[string]string{"HELLO": "world"})
 	require.Error(t, err)
 	require.Nil(t, res)
 }
@@ -46,13 +60,13 @@ func TestStringToSliceWithVars(t *testing.T) {
 	src := `'hello' hello123 "world" \
 	"hello-world" hello-${USER}`
 
-	res, err := StringToSliceWithVars(src, vars)
+	res, err := StringToSliceWithMap(src, vars)
 	require.NoError(t, err)
 	require.Equal(t, exp, res)
 }
 
 func BenchmarkStringToSlice(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		StringToSliceWithVars(`'hello' hello123 "world"`, nil)
+		StringToSliceWithMap(`'hello' hello123 "world"`, nil)
 	}
 }

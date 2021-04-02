@@ -35,18 +35,28 @@ bin, args, err := shellparse.Command(`bash -c 'echo "It\'s awesome"'`)
 // args: []string{"-c", "echo \"It's awesome\""}
 ```
 
+With current environment
+```
+// export SLEEP=1
+
+bin, args, err := shellparse.CommandWithEnv(`bash -c 'sleep ${SLEEP}'`)
+// bin: bash
+// args: []string{"-c", "sleep 1"}
+
+```
+
 With custom variables:
 ```
 vars := map[string]string{}{
     "USER": "johndoe",
 }
-bin, args, err := shellparse.CommandWithVars(`echo ${USER}`, vars)
+bin, args, err := shellparse.CommandWithMap(`echo ${USER}`, vars)
 // bin: echo
 // args: []string{"johndoe"}
 ```
 
 If string contains ${VAR} which is not present in provided map,
-error will be raised.
+error will be raised. To avoid, escape variable in the following way: `\${VAR}`.
 
 > Please note, `*WithVars` functions will never lookup current environment directly. 
 All `key`=`value` var replacements expected to be present in a provided map.

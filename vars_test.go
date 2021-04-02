@@ -24,7 +24,7 @@ func TestParseVarsFileIncorrect(t *testing.T) {
 func TestParseVarsFileWithExtraVars(t *testing.T) {
 	vars := map[string]string{"FOO": "FOO"}
 
-	res, err := ParseVarsFileWithVars("./_testdata/dotenv_with_vars.txt", vars)
+	res, err := ParseVarsFileWithMap("./_testdata/dotenv_with_vars.txt", vars)
 	exp := map[string]string{"FOO": "bar"}
 
 	require.NoError(t, err)
@@ -32,14 +32,14 @@ func TestParseVarsFileWithExtraVars(t *testing.T) {
 }
 
 func TestParseVarsFile_Error(t *testing.T) {
-	m, err := ParseVarsFileWithVars("./testdata/_absent_file_", nil)
+	m, err := ParseVarsFileWithMap("./testdata/_absent_file_", nil)
 
 	require.Error(t, err)
 	require.Empty(t, m)
 }
 
 func TestParseVarsFile_Muted(t *testing.T) {
-	m, err := ParseVarsFileWithVars("-./testdata/_absent_file_", nil)
+	m, err := ParseVarsFileWithMap("-./testdata/_absent_file_", nil)
 
 	require.NoError(t, err)
 	require.Empty(t, m)

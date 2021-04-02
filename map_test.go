@@ -38,7 +38,7 @@ func TestStringToMapWithVars(t *testing.T) {
 	src := `'hello1=world1' "he/llo2=world2" hello3=${USER} \
 	"hello4=world4"`
 
-	res, err := StringToMapWithVars(src, vars)
+	res, err := StringToMapWithMap(src, vars)
 	require.NoError(t, err)
 	require.Equal(t, exp, res)
 }
@@ -52,13 +52,13 @@ FOO=bar
 BAZ=foo
 HTTP_PROXY=
 # another comment`
-	res, err := StringToMapWithVars(src, nil)
+	res, err := StringToMapWithMap(src, nil)
 	require.NoError(t, err)
 	require.Equal(t, exp, res)
 }
 
 func BenchmarkStringToMap(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		StringToMapWithVars(`hello1=world1 hello2=world2`, nil)
+		StringToMapWithMap(`hello1=world1 hello2=world2`, nil)
 	}
 }

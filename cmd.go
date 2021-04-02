@@ -2,18 +2,29 @@ package shellparse
 
 import (
 	"fmt"
+	"os"
+	"strings"
 )
 
 // Command parses string into binary and arguments
 // and removes unnecessary escape runes.
 func Command(src string) (string, []string, error) {
-	return CommandWithVars(src, nil)
+	return CommandWithMap(src, nil)
 }
 
-// CommandWithVars same as Command, but additionally
+func CommandWithEnv(src string) (string, []string, error) {
+	envs := strings.Join(os.Environ(), " ")
+	vars, err := StringToMap(envs)
+	if err != nil {
+		return "", nil, err
+	}
+	return CommandWithMap(src, vars)
+}
+
+// CommandWithMap same as Command, but additionally
 // performs replacement of ${VAR} with provided k/v map.
-func CommandWithVars(src string, vars map[string]string) (string, []string, error) {
-	parts, err := StringToSliceWithVars(src, vars)
+func CommandWithMap(src string, vars map[string]string) (string, []string, error) {
+	parts, err := StringToSliceWithMap(src, vars)
 	if err != nil {
 		return "", nil, err
 	}

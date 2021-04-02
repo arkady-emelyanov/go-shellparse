@@ -1,6 +1,7 @@
 package shellparse
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -28,9 +29,9 @@ func TestCommandMultiline(t *testing.T) {
 	cmd := `docker run -it \
 				--rm \
 				-v /tmp:/tmp:rw`
-	exp := []string{"docker", "run", "-it", "--rm", "-v", "/tmp:/tmp:rw"}
-
 	bin, args, err := Command(cmd)
+
+	exp := []string{"docker", "run", "-it", "--rm", "-v", "/tmp:/tmp:rw"}
 	require.NoError(t, err)
 	require.Equal(t, exp[0], bin)
 	require.Equal(t, exp[1:], args)
@@ -42,6 +43,18 @@ func TestCommandEmpty(t *testing.T) {
 	require.Error(t, err)
 	require.Equal(t, "", bin)
 	require.Nil(t, args)
+}
+
+func TestCommandWithEnv(t *testing.T) {
+
+	os.Setenv("SLEEP", "1")
+	bin, args, err := CommandWithEnv(`bash -c 'sleep ${SLEEP}'`)
+	os.Unsetenv("SLEEP")
+
+	exp := []string{"bash", "-c", "sleep 1"}
+	require.NoError(t, err)
+	require.Equal(t, exp[0], bin)
+	require.Equal(t, exp[1:], args)
 }
 
 func TestCommandWithVars(t *testing.T) {
@@ -56,7 +69,7 @@ func TestCommandWithVars(t *testing.T) {
 
 	vars := map[string]string{"HOME": "/home/john"}
 	for i, cmd := range cmds {
-		bin, args, err := CommandWithVars(cmd, vars)
+		bin, args, err := CommandWithMap(cmd, vars)
 		exp := expt[i]
 
 		require.NoError(t, err)
