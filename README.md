@@ -3,7 +3,8 @@
 [![GoDoc](https://godoc.org/github.com/arkady-emelyanov/go-shellparse?status.svg)](https://godoc.org/github.com/arkady-emelyanov/go-shellparse)
 [![Go Report Card](https://goreportcard.com/badge/github.com/arkady-emelyanov/go-shellparse)](https://goreportcard.com/report/github.com/arkady-emelyanov/go-shellparse)
 [![Codecov](https://codecov.io/gh/arkady-emelyanov/go-shellparse/branch/master/graph/badge.svg)](https://codecov.io/gh/arkady-emelyanov/go-shellparse)
-
+![CodeQL](https://github.com/arkady-emelyanov/go-shellparse/workflows/CodeQL/badge.svg)
+![CI Build](https://github.com/arkady-emelyanov/go-shellparse/actions/workflows/go.yml/badge.svg)
 
 Whenever you need parse command and arguments from a config file,
 you facing quotes/escaping problem. Library hides complexity 

@@ -1,5 +1,4 @@
 name: Go
-
 on:
   push:
     branches: [ master ]
@@ -7,7 +6,6 @@ on:
     branches: [ master ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -23,8 +21,9 @@ jobs:
       run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
 
     - name: Upload coverage report
-      uses: codecov/codecov-action@v1.0.2
+      uses: codecov/codecov-action@v1
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.txt
         flags: unittests
         name: codecov-umbrella
